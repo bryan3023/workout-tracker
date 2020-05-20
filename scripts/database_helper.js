@@ -30,7 +30,7 @@ function runMySqlScript(scriptName, rootPassword, databaseName) {
     mySqlCommand = mySqlExecutable[process.platform](),
     script = getMySqlScript(scriptName)
 
-  if (!mySqlExecutable) return console.error("MySQL not found. Aborting.")
+  if (!mySqlCommand) return console.error("MySQL not found. Aborting.")
   if (!script) return console.log(`Script '${scriptName} not found. Skipping.`)
 
   const stdin = fs.readFileSync(script, {encoding: "utf8"})
