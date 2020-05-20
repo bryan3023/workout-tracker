@@ -1,4 +1,12 @@
--- Drops the todolist if it exists currently --
-DROP DATABASE IF EXISTS sequelize_fitness;
--- Creates the "todolist" database --
-CREATE DATABASE sequelize_fitness;
+--
+--  Create objects within the database.
+--
+--  Note the database name is not specified to ensure this script can be run
+--  either locallly (specify name via command line) or in Heroku/JAWSDB (set
+--  default schema on connection config.)
+--
+
+
+CREATE TABLE test (
+    id int not null
+);

@@ -1,9 +1,9 @@
 
 {
   "development": {
-    "username": "root",
-    "password": "root",
-    "database": "sequelize_fitness",
+    "username": "bryan3023.sequelize_fitness",
+    "password": "od$VP^rwg!ek0!V1O2^%",
+    "database": "sequelize_fitness_DB",
     "host": "127.0.0.1",
     "dialect": "mysql",
     "operatorsAliases": false

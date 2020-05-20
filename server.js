@@ -1,26 +1,21 @@
-// -- BRING IN OUR PROJECT REQUIREMENTS -- //
-const express = require("express")
-const path = require("path")
+const
+  express = require("express"),
+  path = require("path"),
+  db = require("./models")
 
-// -- Requiring our models for syncing -- //
-// ================== > 
-let db = require("./models");
+const
+  api_routes = require("./routes/api_routes"),
+  about_routes = require("./routes/html_routes")
 
-// -- Requiring our Routes -- //
-const api_routes = require("./routes/api_routes");
-const about_routes = require("./routes/html_routes");
+const
+  app = express(),
+  PORT = process.env.PORT || 8080
 
-// -- CREATE AN `EXPRESS` INSTANCE -- //
-const app = express();
-// -- DEFINE A PORT -- //
-const PORT = process.env.PORT || 5000;
 
-// -- PARSE FORM (CLIENT-SIDE) INPUTS -- //
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
 
-// -- TELL EXPRESS WHERE OUR STATIC FILES ARE LOCATED -- //
-app.use(express.static("public"));
+app.use(express.static("public"))
 
 // ==== ** OPTIONAL ** ===== //
 // -- IF YOU WANT TO USE HANDLEBARS TO SERVE UP YOUR HTML FILES, INCLUDE MIDDLEWARE SETUP BELOW -- //
@@ -38,7 +33,7 @@ app.use(express.static("public"));
 
 // ================================== // 
 // -- Activity Syntax -> Passing App INSTANCE to Route -- //
-require("./routes/html_routes")(app);
+require("./routes/html_routes")(app)
 
 
 // -- Example ROUTES using EXPRESS ROUTER (https://expressjs.com/en/guide/routing.html) -- //
@@ -54,7 +49,7 @@ app.use('/api/activity', api_routes);
 // =============================================================
 db.sequelize.sync().then(function() {
   app.listen(PORT, function() {
-    console.log(`App running on port ${PORT}!`);
-  });
-});
+    console.log(`App running on port ${PORT}!`)
+  })
+})
 
