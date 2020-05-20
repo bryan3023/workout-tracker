@@ -1,0 +1,78 @@
+html {
+  font-size: 16px;
+}
+
+body {
+
+}
+
+ul, li {
+  list-style-type: none;
+  padding: 0;
+}
+
+.viewport {
+  padding-top: 80px;
+}
+
+.list-area {
+  border: 1px solid #282828;
+  margin: 70px inherit 30px inherit;
+  position: relative;
+  padding: 20px;
+}
+
+.list-area h4 {
+  position: absolute;
+  top: -34px;
+  left: 0;
+  background-color: #282828;
+  color: #fff;
+  padding: 8px;
+  font-size: 1rem;
+  line-height: 1rem;
+  margin: 0;
+  height: 34px;
+}
+
+div#workouts-list,
+div#activities-list {
+  min-height: 100px;
+}
+
+button#add-workout {
+  margin-left: 12px;
+}
+
+div.right-column {
+  display: none;
+}
+
+#workouts-list ul li,
+#activities-list ul li {
+  font-size: .9rem;
+  line-height: 1.1rem;
+  margin-bottom: 20px;
+}
+
+#workouts-list ul li {
+  font-weight: bold;
+  margin: -20px -20px 20px -20px;
+  padding: 12px;
+
+}
+
+#workouts-list ul li.selected {
+  background-color: #cdcdcd;
+}
+
+#activities-list ul li span {
+  font-weight: bold;
+}
+
+#workouts-list ul li span {
+  font-size: .8rem;
+  line-height: .85rem;
+  display: block;
+  font-weight: normal;
+}

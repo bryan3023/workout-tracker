@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Mongo Fitness</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="assets/css/main.css"/>
+</head>
+<body>
+  <div class="viewport">
+
+    <div class="container">
+      <div class="row">
+
+        <!-- List the workout stuff on the left side -->
+        <div class="col-4">
+          <div class="list-area">
+            <h4>Workouts</h4>
+            <div id="workouts-list"></div>
+
+            <div id="add-workout-area">
+              <div class="form-group form-inline">
+                <label>Add a workout for today</label>
+                <input type="text" class="form-control" name="workout-name" id="workout-name" />
+                <button id="add-workout" class="btn btn-primary btn-small">Add</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- On the right side, show the activities for the selected day,
+        and allow for a new activity to be entered -->
+        <div class="col-8 right-column">
+          <div class="list-area">
+            <h4>Activities</h4>
+            <div id="activities-list"></div>
+
+            <div id="add-activity-area">
+              <div class="form-group">
+                <label>Add an activity</label>
+                <select id="exercise" class="form-control">
+                  <option value="">Choose an exercise</option>
+                </select>
+              </div>
+
+              <div class-="form-group">
+                <label>Duration</label>
+                <input class="form-control" type="text" name="duration" id="duration" />
+              </div>
+
+              <div class-="form-group">
+                <label>Weight</label>
+                <input class="form-control" type="text" name="weight" id="weight" />
+              </div>
+
+              <div class-="form-group">
+                <label>Reps</label>
+                <input class="form-control" type="text" name="reps" id="reps" />
+              </div>
+
+              <div class-="form-group">
+                <label>Sets</label>
+                <input class="form-control" type="text" name="sets" id="sets" />
+              </div>
+
+              <div class-="form-group">
+                <label>Distance</label>
+                <input class="form-control" type="text" name="distance" id="distance" />
+              </div>
+
+              <div class-="form-group">
+                <button id="add-activity" class="btn btn-primary btn-small">Add</button>
+              </div>
+
+            </div> <!-- /#add-activity-area-->
+          </div>
+        </div> <!-- /col-xs-8 -->
+
+      </div> <!-- /row-->
+    </div> <!-- /container-->
+  </div>
+  
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+  <script src="/assets/js/app.js"></script>
+</body>
+</html>
