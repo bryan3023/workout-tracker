@@ -25,12 +25,10 @@ This will create and populate the database, and also configure a local MySQL acc
 Once you're done with the program, you can cleanly remove the database with:
 
 ```
-npm run remove-db-mac
+npm run remove-db
 ```
 
-> **WARNING:** On Windows, when running the `create-db` and `remove-db` scripts from within Git Bash, **your MySQL root password will not be masked**.
->
->It works as expected when running from within `cmd.exe` or `powershell.exe`, and I would recommend you use one of those.
+> **WARNING:** On Windows, when running the `create-db` and `remove-db` scripts from within Git Bash, **your MySQL root password will not be masked**. It works as expected when running from within `cmd.exe` or `powershell.exe`, and I would recommend you use one of those.
 
 ### Usage
 Once installed, begin the program by typing:
