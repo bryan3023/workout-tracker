@@ -1,23 +1,29 @@
 const
   fs = require("fs"),
   path = require("path"),
-  { execFileSync } = require("child_process"),
+  { execFileSync, spawnSync } = require("child_process"),
+  stream = require('stream'),
   inquirer = require("inquirer")
 
 
 /*
-  Get the MySQL root password so users are not prompted for each script.
+  Get local MySQL root credentials so users are not prompted for each script.
  */
-async function getMySqlRootPassword() {
-  const {root} = await inquirer.prompt([
+async function getMySqlRootCredentials() {
+  const credentials = await inquirer.prompt([
     {
-      message: "MySQL local instance root password:",
+      message: "MySQL local instance root username:",
+      default: "root",
+      name: "username"
+    },
+    {
       type: "password",
+      message: "MySQL local instance root password:",
       mask: true,
-      name: "root"
+      name: "password"
     }
   ])
-  return root
+  return credentials
 }
 
 
@@ -25,25 +31,37 @@ async function getMySqlRootPassword() {
   Run a SQL script as root with the provided password. If a database
   name is provided, run the script under that schema.
  */
-function runMySqlScript(scriptName, rootPassword, databaseName) {
+function runMySqlScript(scriptName, credentials, databaseName) {
+  const passwordWarning = "[Warning] Using a password on the command line interface can be insecure."
+
   const
     mySqlCommand = mySqlExecutable[process.platform](),
-    script = getMySqlScript(scriptName)
+    script = getMySqlScript(scriptName),
+    stdout = new stream.Writable(),
+    stderr = new stream.Writable()
 
   if (!mySqlCommand) return console.error("MySQL not found. Aborting.")
-  if (!script) return console.log(`Script '${scriptName} not found. Skipping.`)
+  if (!script) return console.log(`Script '${scriptName}' not found. Skipping.`)
 
   const stdin = fs.readFileSync(script, {encoding: "utf8"})
 
+  stdout._write = data => console.log(data.toString())
+  stderr._write = data => console.log(data.toString())
+
   let arguments = [
     '-u',
-    'root',
-    `--password=${rootPassword}`
+    credentials.username,
+    `--password=${credentials.password}`
   ]
 
   if (databaseName) arguments = [...arguments, databaseName]
 
-  execFileSync(mySqlCommand, arguments, {input: stdin})
+  console.log(`Running: '${script}'`)
+
+  const mySql = execFileSync(mySqlCommand, arguments, {
+    input: stdin,
+    stdio: [null, 'inherit', 'inherit']
+  })  
 }
 
 
@@ -58,7 +76,6 @@ function getMySqlScript(scriptName) {
 
   return scriptExists ? scriptFile : false
 }
-
 
 
 /*
@@ -96,6 +113,6 @@ function getMySqlExecutableWindows() {
 
 
 module.exports = {
-  getMySqlRootPassword,
+  getMySqlRootCredentials,
   runMySqlScript
 }

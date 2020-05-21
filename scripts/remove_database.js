@@ -1,5 +1,5 @@
 const
-  { getMySqlRootPassword, runMySqlScript} = require('./database_helper')
+  { getMySqlRootCredentials, runMySqlScript} = require('./database_helper')
 
 const
   env = process.env.NODE_ENV || 'development',
@@ -7,6 +7,6 @@ const
   database = process.argv[2] || config.database 
 
 
-getMySqlRootPassword().then(password => {
-  runMySqlScript('remove.sql', password)
+getMySqlRootCredentials().then(credentials => {
+  runMySqlScript('remove.sql', credentials)
 })

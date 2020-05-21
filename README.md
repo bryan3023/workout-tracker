@@ -30,7 +30,7 @@ npm run remove-db
 
 > **WARNING:** On Windows, when running the `create-db` and `remove-db` scripts from within Git Bash, **your MySQL root password will not be masked**. It works as expected when running from within `cmd.exe` or `powershell.exe`, and I would recommend you use one of those.
 
-### Usage
+## Usage
 Once installed, begin the program by typing:
 
 ```

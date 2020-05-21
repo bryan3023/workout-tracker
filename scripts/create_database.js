@@ -1,5 +1,5 @@
 const
-  { getMySqlRootPassword, runMySqlScript} = require('./database_helper')
+  { getMySqlRootCredentials, runMySqlScript} = require('./database_helper')
 
 const
   env = process.env.NODE_ENV || 'development',
@@ -7,8 +7,8 @@ const
   database = process.argv[2] || config.database 
 
 
-getMySqlRootPassword().then(password => {
-  runMySqlScript('create.sql', password)
-  runMySqlScript('schema.sql', password, database)
-  runMySqlScript('seed.sql', password, database)
+getMySqlRootCredentials().then(credentials => {
+  runMySqlScript('create.sql', credentials)
+  runMySqlScript('schema.sql', credentials, database)
+  runMySqlScript('seed.sql', credentials, database)
 })
