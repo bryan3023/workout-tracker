@@ -1,6 +1,9 @@
-$(document).ready(function(){
+$(document).ready(() => {
 
-  // We're going to store some data here because we want to reference this
+  const
+    workoutsList = $("#workouts-list ul")
+
+    // We're going to store some data here because we want to reference this
   // stuff multiple times, and this way we don't need to keep doing API calls
   let allWorkouts = [];
   let selectedWorkout = { activities: []};
@@ -12,18 +15,23 @@ $(document).ready(function(){
   // (If we're adding a new blank item to the list we will want to auto-select 
   // it, so that is handled in the params argument)
   function populateWorkouts(params){
+    // const workoutsList = $("#workouts-list ul")
+    // workoutsList.empty()
     $("#workouts-list").empty();
     const ul = $("<ul>");
     allWorkouts.forEach( (workout, idx) => {
       console.log(workout);
-      const li = $("<li>");
-      li.addClass("workout-item");
-      li.attr("data-workout-id", workout._id);
-      li.attr("data-workout-idx", idx);
-      li.html("<span>" + workout.day + "</span>" + workout.name);
-      ul.append(li);
+
+      const li = $("<li>")
+        .addClass("workout-item")
+        .attr("data-workout-id", workout.id)
+        .attr("data-workout-idx", idx)
+        .html(`<span>${workout.day}</span> ${workout.name}`)
+
+      // workoutsList.append(li)
+     ul.append(li);
     });
-    $("#workouts-list").append(ul);
+   $("#workouts-list").append(ul);
     if( params && params.selectLatest === true ){
       $("#workouts-list li:last-child").addClass("selected");
     }
@@ -76,7 +84,7 @@ $(document).ready(function(){
   });
 
 
-  /** ********** API Calls ******************* */
+  // --- API Calls ---
 
   // Retrive a JSON payload of all exercises
   function getExercises(){
@@ -107,12 +115,12 @@ $(document).ready(function(){
       method: "POST",
       url: "/api/workout",
       data: selectedWorkout
-    }).then(function(resp){
-      console.log(resp);
-      if( resp && resp._id ){
-        selectedWorkout._id = resp._id;
+    }).then(response => {
+      console.log(response)
+      if (response && response.id) {
+        selectedWorkout.id = response.id
       }
-    });
+    })
   }
 
   // Add an activity to the current workout being viewed.
@@ -120,7 +128,7 @@ $(document).ready(function(){
   function saveActivity(activity){
     $.ajax({
       method: "POST",
-      url: "/api/activity?workoutId=" + selectedWorkout._id,
+      url: "/api/activity?workoutId=" + selectedWorkout.id,
       data: activity
     }).then(function(resp){
       console.log(resp);
@@ -131,4 +139,4 @@ $(document).ready(function(){
   // Page-loading operations
   getExercises();
   getWorkouts();
-});
+})

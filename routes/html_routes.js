@@ -1,22 +1,9 @@
-const express = require("express");
-
-// -- BRING IN REFERENCE TO OUR CONTROLLER METHODS (LOGIC) -- //
-const AboutCntrl = require("../controllers/aboutCntrl");
-
-
-module.exports = function(app) {
-    app.get('/about', AboutCntrl.getAbout);
-}
+const
+  router = require("express").Router(),
+  {AboutController} = require("../controllers")
 
 
-// ===== OPTIONAL CODE IF YOU WANT TO TRY AND USE EXPRESS ROUTER ==== //
+router.get('/', AboutController.getAbout)
 
-// const router = express.Router();
 
-// // -- ROUTES FOR '/about' URL ROUTE -- //
-// router.get("/", AboutCntrl.getAbout);
-
-// // -- EXPORT THE ROUTES -- //
-// module.exports = router;
-
-// ================================================= //
+module.exports = router

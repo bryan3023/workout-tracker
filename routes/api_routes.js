@@ -1,15 +1,13 @@
-const express = require('express')
-// -- BRING IN THE `EXPRESS ROUTER` -- //
-const router = express.Router()
-
-const ExerciseCntrl = require('../controllers/exerciseCntrl');
+const
+  router = require('express').Router(),
+  {ExerciseController} = require('../controllers')
 
 // -- USE MVC ARCHITECTURE --> HAVE CLEAN ROUTES AND MOVE THE LOGIC TO THE /CONTROLLERS DIRECTORY -- //
 
 
 // GET  "/""
 // Calls controller which will return all activities for a specific workout
-router.get("/", ExerciseCntrl.getAll);
+router.get("/", ExerciseController.getAll);
 
 // -- ADD ADDITIONAL ROUTES -- //
 

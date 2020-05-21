@@ -1,8 +1,9 @@
 /*
-  Define the Exercise model.
+  Define the Activity model, which consists of an exercise and the conditions
+  to perform it under.
  */
-module.exports = function (sequelize, DataTypes) {
-  const Exercise = sequelize.define("Exercise", {
+module.exports = function(sequelize, DataTypes) {
+  const Activity = sequelize.define("Activity", {
     exercise_type: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -19,5 +20,5 @@ module.exports = function (sequelize, DataTypes) {
     }
   })
 
-  return Exercise
+  return Activity
 }

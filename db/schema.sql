@@ -6,7 +6,4 @@
 --  default schema on connection config.)
 --
 
-
-CREATE TABLE test (
-    id int not null
-);
+-- (We'll use sequelize for this.)

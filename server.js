@@ -1,6 +1,5 @@
 const
   express = require("express"),
-  path = require("path"),
   db = require("./models")
 
 const
@@ -30,26 +29,16 @@ app.use(express.static("public"))
 
 
 
-
-// ================================== // 
-// -- Activity Syntax -> Passing App INSTANCE to Route -- //
-require("./routes/html_routes")(app)
-
-
 // -- Example ROUTES using EXPRESS ROUTER (https://expressjs.com/en/guide/routing.html) -- //
 
-// -- Use express router to register routes as middleware -- //
+// -- Use express router to register routes as middleware --
+
 app.use('/api/activity', api_routes);
-
-// ======= ALTERNATE SYNTAX FOR /about ROUTE USING EXPRESS ROUTER ==== //
-// app.use('/about', about_routes);  // <-- uncomment to use, update 
+app.use('/about', about_routes)
 
 
-// Syncing our sequelize models and then starting our Express app
-// =============================================================
 db.sequelize.sync().then(function() {
   app.listen(PORT, function() {
     console.log(`App running on port ${PORT}!`)
   })
 })
-

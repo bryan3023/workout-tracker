@@ -7,6 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "watch": "clear && npx nodemon server.js",
+    "seed": "npx sequelize-cli db:seed:all",
+    "unseed": "npx sequelize-cli db:seed:undo:all",
+    "reseed": "npm run unseed ; npm run seed",
     "create-db": "node scripts/create_database.js",
     "remove-db": "node scripts/remove_database.js"
   },

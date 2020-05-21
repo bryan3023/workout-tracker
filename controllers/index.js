@@ -1,3 +1,4 @@
 module.exports = {
-  ExerciseCntrl: require('./exerciseCntrl')
+  ExerciseController: require('./exerciseController'),
+  AboutController: require('./aboutController')
 };
