@@ -11,32 +11,32 @@ module.exports = {
   up: (queryInterface, Sequelize) =>
     queryInterface.bulkInsert('Exercises', [
       row({
-        exercise_type: 'cardio',
-        exercise_name: 'stairmaster'
+        type: 'cardio',
+        name: 'stairmaster'
       }),
       row({
-        exercise_type: 'strength',
-        exercise_name: 'barbell curl'
+        type: 'strength',
+        name: 'barbell curl'
       }),
       row({
-        exercise_type: 'strength',
-        exercise_name: 'lateral curl'
+        type: 'strength',
+        name: 'lateral curl'
       }),
       row({
-        exercise_type: 'strength',
-        exercise_name: 'benchpress'
+        type: 'strength',
+        name: 'benchpress'
       }),
       row({
-        exercise_type: 'cardio',
-        exercise_name: 'treadmill'
+        type: 'cardio',
+        name: 'treadmill'
       }),
       row({
-        exercise_type: 'stretching',
-        exercise_name: 'single-knee rotation'
+        type: 'stretching',
+        name: 'single-knee rotation'
       }),
       row({
-        exercise_type: 'balance',
-        exercise_name: 'standing knee lift'
+        type: 'balance',
+        name: 'standing knee lift'
       })
     ], {}),
 

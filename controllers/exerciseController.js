@@ -2,19 +2,19 @@
 
 const {Exercise} = require("../models")
 
-const ExerciseCntrl = {
+const ExerciseController = {
   // This is called (when needed) from the route page when a 
   // listing of all exercises is needed
   getAll(req, res){
 
     // -- YOU WILL UPDATE WHAT THE "RESPONSE OBJECT" RETURNS -- //
-    return res.json({ searching: "Finding Exercises ..."})
+    // return res.json({ searching: "Finding Exercises ..."})
 
     // -- EXAMPLE SEQUELIZE DB QUERY -- //
-    // Exercise.find({}).then(data => {
-    //   res.json(data)
-    // });
+    Exercise.findAll({}).then(data => {
+      res.json(data)
+    });
   }
 }
 
-module.exports = ExerciseCntrl
+module.exports = ExerciseController 

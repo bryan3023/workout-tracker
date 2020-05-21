@@ -4,21 +4,32 @@
  */
 module.exports = function(sequelize, DataTypes) {
   const Activity = sequelize.define("Activity", {
-    exercise_type: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        len: [1],
-      },
+    duration: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     },
-    exercise_name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        len: [1],
-      },
+    weight: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    sets: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    reps: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    distance: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     }
   })
+
+  Activity.associate = function(models) {
+    Activity.belongsTo(models.Workout)
+    models.Exercise.hasMany(Activity)
+  }
 
   return Activity
 }

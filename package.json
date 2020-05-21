@@ -11,7 +11,8 @@
     "unseed": "npx sequelize-cli db:seed:undo:all",
     "reseed": "npm run unseed ; npm run seed",
     "create-db": "node scripts/create_database.js",
-    "remove-db": "node scripts/remove_database.js"
+    "remove-db": "node scripts/remove_database.js",
+    "reset-db": "npm run create-db ; node scripts/sync_sequelize.js ; npm run seed"
   },
   "author": "",
   "license": "MIT",

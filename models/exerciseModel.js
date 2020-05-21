@@ -1,22 +1,22 @@
 /*
-  Define the Exercise model.
+  Define the Exercise model, which constists of an exercise type and its name.
  */
 module.exports = function(sequelize, DataTypes) {
   const Exercise = sequelize.define("Exercise", {
-    exercise_type: {
+    type: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
         len: [1],
-        in: ['cardio', 'strength', 'stetching', 'balance']
-      },
+        isIn: [['cardio', 'strength', 'stretching', 'balance']]
+      }
     },
-    exercise_name: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        len: [1],
-      },
+        len: [1]
+      }
     }
   })
 

@@ -7,7 +7,7 @@ const
 
 // GET  "/""
 // Calls controller which will return all activities for a specific workout
-router.get("/", ExerciseController.getAll);
+router.get("/exercise", ExerciseController.getAll);
 
 // -- ADD ADDITIONAL ROUTES -- //
 

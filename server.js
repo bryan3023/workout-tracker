@@ -33,7 +33,7 @@ app.use(express.static("public"))
 
 // -- Use express router to register routes as middleware --
 
-app.use('/api/activity', api_routes);
+app.use('/api', api_routes);
 app.use('/about', about_routes)
 
 
