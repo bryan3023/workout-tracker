@@ -1,12 +1,12 @@
 {
-  "name": "unsolved",
+  "name": "workout-tracker",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "watch": "nodemon server.js",
+    "watch": "clear && npx nodemon server.js",
     "create-db": "node scripts/create_database.js",
     "remove-db": "node scripts/remove_database.js"
   },
@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "inquirer": "^7.1.0",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "sequelize-cli": "^5.5.1"
   }
 }
