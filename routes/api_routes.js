@@ -15,8 +15,5 @@ router.post("/workout", WorkoutController.create)
 router.get("/exercise", ExerciseController.getAll)
 
 
-
-// -- ADD ADDITIONAL ROUTES -- //
-
 module.exports = router
 

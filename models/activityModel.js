@@ -27,8 +27,13 @@ module.exports = function(sequelize, DataTypes) {
   })
 
   Activity.associate = function(models) {
-    Activity.belongsTo(models.Workout)
-    models.Exercise.hasMany(Activity)
+    models.Workout.hasMany(Activity, {
+      as: 'activities',
+      foreignKey: 'workoutId'
+    })
+    models.Exercise.hasMany(Activity, {
+      foreignKey: 'exerciseId'
+    })
   }
 
   return Activity

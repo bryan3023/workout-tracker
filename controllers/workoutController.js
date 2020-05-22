@@ -1,28 +1,39 @@
-const {Workout, Activity} = require("../models")
+const
+  {Workout, Activity} = require("../models"),
+  {removeSequelizeColumns} = require('../lib')
 
 const WorkoutController = {
+
 
   getAll(req, res) {
     Workout.findAll({
       attributes: ['id', 'name', 'day'],
-      include: [Activity]
-    }).then(data => {
-      res.json(data)
+      include: [{model: Activity, as: 'activities'}]
+    }).then(response => {
+      const result = {
+        status: "success",
+        data: response.map(r => r.dataValues)
+      }
+      res.json(result)
+    }).catch(error => {
+      const result = {
+        status: "failure",
+        data: error.message
+      }
+      res.json(result)
     })
   },
+
 
   create(req, res) {
     console.log(req.body)
     Workout.create(req.body)
-      .then(data => {
+      .then(({dataValues}) => {
         const result = {
           status: "success",
-          data: {
-            id: data.dataValues.id,
-            name: data.dataValues.name,
-            day: data.dataValues.day
-          }
+          data: dataValues
         }
+        removeSequelizeColumns(result.data)
         res.json(result)
       })
       .catch(error => {

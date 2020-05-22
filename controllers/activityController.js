@@ -1,34 +1,37 @@
-const {Activity} = require("../models")
+const
+  {Activity} = require("../models"),
+  {removeSequelizeColumns} = require('../lib')
 
 const ActivityController = {
 
   getAll(req, res){
     Activity.findAll({
       attributes: [
-        'id', 'duration', 'distance', 'reps', 'sets', 'weight',
-        ['ExerciseId', 'exerciseId']
+        'id', 'duration', 'distance', 'reps', 'sets', 'weight', 'exerciseId'
       ]
-    }).then(data => res.json(data))
+    }).then(response => {
+      const result = {
+        status: "success",
+        data: response.map(r => r.dataValues)
+      }
+      res.json(result)
+    }).catch(error => {
+      const result = {
+        status: "failure",
+        data: error.message
+      }
+      res.json(result)
+    })
   },
 
 
   setOne(req, res) {
     Activity.create(req.body).then(({dataValues}) => {
-      console.log(data)
       const result = {
         status: "success",
-        data: {
-          id: dataValues.id,
-          duration: dataValues.duration,
-          distance: dataValues.distance,
-          reps: dataValues.reps,
-          sets: dataValues.sets,
-          weight: dataValues.weight,
-          exerciseId: dataValues.exerciseId,
-          workoutId: dataValues.WorkoutId
-        }
+        data: dataValues
       }
-      console.log(result)
+      removeSequelizeColumns(result.data)
       res.json(result)
     })
     .catch(error => {

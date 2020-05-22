@@ -16,11 +16,5 @@ module.exports = function(sequelize, DataTypes) {
     }
   })
 
-  Workout.associate = function(models) {
-    Workout.hasMany(models.Activity, {
-      onDelete: "cascade"
-    })
-  }
-
   return Workout
 }

@@ -56,7 +56,7 @@ $(document).ready(() => {
     },
 
     add(workout) {
-      workout.Activities = []
+      workout.activities = []
       workout.day = getDayString(workout.day)
       console.log(workout)
 
@@ -64,7 +64,7 @@ $(document).ready(() => {
     },
 
     getCurrentActivities() {
-      return this.getCurrent().Activities
+      return this.getCurrent().activities
     },
 
     addCurrentActivity(activity) {
@@ -76,7 +76,7 @@ $(document).ready(() => {
   
 
   const
-    $exerciseDropDown = $("select[name='ExerciseId']"),
+    $exerciseDropDown = $("select[name='exerciseId']"),
     $workoutList = $("#workouts-list ul"),
     $activityList = $("#activities-list ul"),
     $addWorkoutButton = $("button#add-workout"),
@@ -121,7 +121,7 @@ $(document).ready(() => {
       console.log(activity)
 
       const
-        exerciseName = Exercises.getName(activity.ExerciseId),
+        exerciseName = Exercises.getName(activity.exerciseId),
         activityHtml = `<span>${exerciseName}</span>`,
         exerciseTargets = [
           getActivityTargetString(activity, 'duration'),
@@ -186,8 +186,6 @@ $(document).ready(() => {
     const id = $(this).attr("data-workout-id")
     Workouts.setCurrentId(id)
 
-    const workout = Workouts.getCurrent()
-
     renderActivityList()
   })
 
@@ -199,11 +197,7 @@ $(document).ready(() => {
     let workout = { day: getDayString() }
     workout = addFormValue(workout, "name")
 
-    console.log(workout)
-
-    // Save to db via api
     saveWorkout(workout)
-
     renderWorkoutList()
   })
 
@@ -212,16 +206,18 @@ $(document).ready(() => {
     event.preventDefault()
 
     let activity = {
-      WorkoutId: Workouts.getCurrentId()
+      workoutId: Workouts.getCurrentId()
     }
-    activity = addFormValue(activity, 'ExerciseId')
+    activity = addFormValue(activity, 'exerciseId')
     activity = addFormValue(activity, 'duration')
     activity = addFormValue(activity, 'weight')
     activity = addFormValue(activity, 'reps')
     activity = addFormValue(activity, 'sets')
     activity = addFormValue(activity, 'distance')
 
-    if (!activity.ExerciseId) {
+    console.log(activity)
+
+    if (!activity.exerciseId) {
       showAlert("Please choose an exercise.")
     } else if (Object.keys(activity).length <= 2) {
       showAlert("Choose at least one target for this exercise.")      
@@ -238,11 +234,16 @@ $(document).ready(() => {
    */
   function getExercises() {
     $.ajax({
-      method: "GET",
-      url: "/api/exercise"
-    }).then(exercises => {
-      Exercises.set(exercises)
-      renderExerciseDropDownList()
+      url: "/api/exercise",
+      method: "GET"
+    })
+    .then(({status, data}) => {
+      if ("success" === status) {
+        Exercises.set(data)
+        renderExerciseDropDownList()
+      } else {
+        console.error(`getExercise() failed: ${data}`)
+      }
     })
   }
 
@@ -254,17 +255,22 @@ $(document).ready(() => {
     $.ajax({
       url: "/api/workout",
       method: "GET"
-    }).then(workouts => {
-      Workouts.set(workouts)
-      renderWorkoutList()
+    }).then(({status, data}) => {
+      if ("success" === status) {
+        Workouts.set(data)
+        console.log(Workouts.getAll())
+        renderWorkoutList()
+      } else {
+        console.error(`getWorkouts() failed: ${data}`)
+      }
     })
   }
 
   // Save the currently selected workout
   function saveWorkout(workout) {
     $.ajax({
-      method: "POST",
       url: "/api/workout",
+      method: "POST",
       data: workout
     }).then(({status, data}) => {
       if ("success" == status) {
@@ -272,6 +278,8 @@ $(document).ready(() => {
         Workouts.setCurrentId(data.id)
         renderWorkoutList()
         renderActivityList()
+      } else {
+        console.error(`saveWorkout() failed: ${data}`)
       }
     })
   }
@@ -287,7 +295,10 @@ $(document).ready(() => {
       if ("success" === status) {
         console.log(data)
         Workouts.addCurrentActivity(data)
+        console.log(Workouts.getAll())
         renderActivityList()
+      } else {
+        console.error(`saveActivity() failed: ${data}`)
       }
     })
   }
