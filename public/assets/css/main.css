@@ -42,7 +42,7 @@ button#add-workout {
   margin-left: 12px;
 }
 
-div.right-column {
+div.activity-pane {
   display: none;
 }
 
@@ -75,3 +75,5 @@ div.right-column {
   display: block;
   font-weight: normal;
 }
+
+.error-alert { display: none;}

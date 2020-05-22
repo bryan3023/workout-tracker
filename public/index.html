@@ -4,18 +4,24 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Sequelize Fitness</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="assets/css/main.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/css/main.css" />
   </head>
 
   <body>
     <div class="container">
+
+      <div class="row">
+        <div class="col-6 offset-3">
+          <div class="alert alert-warning error-alert" role="alert"></div>
+        </div>
+      </div>
+
       <div class="row">
 
         <!-- List the workout stuff on the left side -->
-        <div class="col-4">
+        <div class="col-sm-4">
           <div class="list-area">
             <h4>Workouts</h4>
             <div id="workouts-list"><ul></ul></div>
@@ -25,7 +31,7 @@
             <div class="form-group form-inline">
               <form name="workouts">
               <label>Add a workout for today</label>
-              <input type="text" class="form-control" name="name" id="workout-name" />
+              <input type="text" class="form-control" name="name" id="workout-name" placeholder="Add a workout for today" />
               <button id="add-workout" class="btn btn-primary btn-small">Add</button>
               </form>
             </div>
@@ -35,22 +41,26 @@
 
         <!-- On the right side, show the activities for the selected day,
         and allow for a new activity to be entered -->
-        <div class="col-8 right-column">
+        <div class="col-sm-8 activity-pane">
           <div class="list-area">
             <h4 id="activity-header"></h4>
             <div id="activities-list"><ul></ul></div>
 
             <div id="add-activity-area">
-              <div class="form-group">
-                <label>Add an activity</label>
-                <select name="ExerciseId" id="exercise" class="form-control">
+              <form>
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Add an activity</label>
+                <select name="ExerciseId" class="col-sm-10 form-control">
                   <option value="">Choose an exercise</option>
                 </select>
               </div>
 
-              <div class-="form-group">
-                <label>Duration</label>
-                <input class="form-control" type="text" name="duration" id="duration" />
+              <div class-="form-group row">
+                <label class="col-sm-2 col-form-label" for="duration">Duration</label>
+                <div class="col-sm-10">
+                  <input class="form-control" type="text" name="duration" />
+                </div>
+                
               </div>
 
               <div class-="form-group">
@@ -59,12 +69,12 @@
               </div>
 
               <div class-="form-group">
-                <label>Reps</label>
+                <label for="reps">Reps</label>
                 <input class="form-control" type="text" name="reps" id="reps" />
               </div>
 
               <div class-="form-group">
-                <label>Sets</label>
+                <label for="sets">Sets</label>
                 <input class="form-control" type="text" name="sets" id="sets" />
               </div>
 
@@ -76,12 +86,13 @@
               <div class-="form-group">
                 <button id="add-activity" class="btn btn-primary btn-small">Add</button>
               </div>
-
+              </form>
             </div> <!-- /#add-activity-area-->
           </div>
-        </div> <!-- /col-xs-8 -->
+        </div> <!-- /col-sm-8 -->
 
       </div> <!-- /row-->
+
     </div> <!-- /container-->
     
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
