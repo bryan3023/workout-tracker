@@ -3,7 +3,8 @@ html {
 }
 
 body {
-
+  margin: 0px;
+  padding-top: 80px;
 }
 
 ul, li {
@@ -11,9 +12,6 @@ ul, li {
   padding: 0;
 }
 
-.viewport {
-  padding-top: 80px;
-}
 
 .list-area {
   border: 1px solid #282828;
@@ -59,17 +57,18 @@ div.right-column {
   font-weight: bold;
   margin: -20px -20px 20px -20px;
   padding: 12px;
-
 }
 
 #workouts-list ul li.selected {
   background-color: #cdcdcd;
 }
 
+
 #activities-list ul li span {
   font-weight: bold;
 }
 
+#activities-list ul li span,
 #workouts-list ul li span {
   font-size: .8rem;
   line-height: .85rem;

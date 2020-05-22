@@ -10,7 +10,7 @@ module.exports = function(sequelize, DataTypes) {
         len: [1]
       }
     },
-    date: {
+    day: {
       type: DataTypes.DATE,
       allowNull: false
     }
