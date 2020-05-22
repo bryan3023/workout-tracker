@@ -6,57 +6,122 @@ $(document).ready(() => {
   }
 
 
-  /*
-    Local model state variables
-   */
-  let
-    allExercises = [],
-    allWorkouts = [],
-    selectedWorkout = { Activities: []},
-    selectedWorkoutId = null
+
+  const Exercises = {
+    exercises: [],
+
+    getAll() {
+      return this.exercises
+    },
+
+    set(exercises) {
+      this.exercises = exercises
+    },
+
+    getName(id) {
+      return this.exercises
+        .filter(e => e.id === parseInt(id))
+        .map(e => e.name)[0]
+    }
+  }
 
 
-  // --- DOM Population ---
+  const Workouts = {
+    workouts: [],
+    current: null,
+
+    getAll() {
+      return this.workouts
+    },
+
+    get(id) {
+      return this.workouts.filter(w => w.id === id)[0]
+    },
+
+    set(workouts) {
+      workouts.forEach(w => w.day = getDayString(w.day))
+      this.workouts = workouts
+    },
+
+    getCurrent() {
+      return this.get(this.current)
+    },
+
+    getCurrentId() {
+      return this.current
+    },
+
+    setCurrentId(current) {
+      this.current = parseInt(current)
+    },
+
+    add(workout) {
+      workout.Activities = []
+      workout.day = getDayString(workout.day)
+      console.log(workout)
+
+      this.workouts.push(workout)
+    },
+
+    getCurrentActivities() {
+      return this.getCurrent().Activities
+    },
+
+    addCurrentActivity(activity) {
+      this.getCurrentActivities().push(activity)
+    }
+  }
+
+
+  
 
   const
     $exerciseDropDown = $("select[name='ExerciseId']"),
-    $workoutList = $("#workouts-list ul")
+    $workoutList = $("#workouts-list ul"),
+    $activityList = $("#activities-list ul"),
+    $addWorkoutButton = $("button#add-workout"),
+    $addActivityButton = $("button#add-activity")
 
 
-  // Populate workout data
-  // (If we're adding a new blank item to the list we will want to auto-select 
-  // it, so that is handled in the params argument)
-  function renderWorkoutList(params) {
-    // const workoutsList = $("#workouts-list ul")
-    // workoutsList.empty()
+// --- DOM Population ---
 
-    $("#workouts-list").empty();
-    const ul = $("<ul>");
-    allWorkouts.forEach(workout => {
-      const li = $("<li>")
-        .addClass("workout-item")
-        .attr("data-workout-id", workout.id)
-        .html(`<span>${workout.day}</span> ${workout.name}`)
+  /*
+    Render the list of workout items, highlighting the selected one.
+   */
+  function renderWorkoutList() {
+    $workoutList.empty()
 
-        ul.append(li)
+    Workouts.getAll().forEach(workout => {
+      const $workoutItem = getRenderedWorkoutItem(workout)
+
+      if (Workouts.getCurrentId() === workout.id) {
+        $workoutItem.addClass("selected")
+      }
+      $workoutList.append($workoutItem)
     })
-    $("#workouts-list").append(ul)
+  }
 
-    if (params && params.selectLatest) {
-      $("#workouts-list li:last-child").addClass("selected")
-    }
+
+  /*
+    Render an individual item in the workout list.
+   */
+  function getRenderedWorkoutItem(item) {
+    return $("<li>")
+      .addClass("workout-item")
+      .attr("data-workout-id", item.id)
+      .html(`<span>${item.day}</span> ${item.name}`)
   }
 
 
   // STUDENTS: Populate activity data for the selected workout
   function renderActivityList() {
-    $("#activities-list").empty()
-    const ul = $("<ul>")
-    selectedWorkout.Activities.forEach(activity => {
+    $activityList.empty()
+
+    Workouts.getCurrentActivities().forEach(activity => {
       console.log(activity)
 
       const
-        exerciseName = getExerciseNameById(activity.ExerciseId),
+        exerciseName = Exercises.getName(activity.ExerciseId),
         activityHtml = `<span>${exerciseName}</span>`,
         exerciseTargets = [
           getActivityTargetString(activity, 'duration'),
@@ -67,29 +132,32 @@ $(document).ready(() => {
         ].filter(t => t)
 
 
-      const li = $("<li>")
+      const $activityItem = $("<li>")
         .addClass("activity-item")
         .attr("data-activity-id", activity.id)
         .html(activityHtml + exerciseTargets.join(", "))
 
-      // workoutsList.append(li)
-     ul.append(li)
+      $activityList.append($activityItem)
     })
-   $("#activities-list").append(ul)
- 
+    renderActivitiesHeader()
+    $("div.activity-pane").show()
   }
 
+  function renderActivitiesHeader() {
+    const workoutName = Workouts.getCurrent().name
+    $("#activity-header").text(`${workoutName} - Activities`)
+  }
 
   /*
     Fill the drop-down list with exercises to choose from.
    */
   function renderExerciseDropDownList() {
-    allExercises.forEach(exercise => {
+    Exercises.getAll().forEach(exercise => {
       const $exerciseOption = $("<option>")
         .val(exercise.id)
         .text(exercise.name)
       $exerciseDropDown.append($exerciseOption)
-    })
+    })    
   }
 
 
@@ -104,36 +172,28 @@ $(document).ready(() => {
   }
 
 
-  // --- Event handlers ---
+// --- Event handlers ---
   
   /*
     When an item in the workout list is clicked, show it on the activity pane.
    */
-  $("#workouts-list").on("click", ".workout-item", function(event) {
+  $workoutList.on("click", ".workout-item", function(event) {
     event.preventDefault()
 
-    $("#workouts-list li").removeClass("selected")
+    $workoutList.children().removeClass("selected")
     $(this).addClass("selected")
-    console.log(this)
+
     const id = $(this).attr("data-workout-id")
-    console.log(id)
-    selectedWorkout = allWorkouts.filter(w => w.id === parseInt(id))[0]
-    selectedWorkoutId = id
-    console.log(selectedWorkoutId)
-    console.log(getWorkoutById(selectedWorkoutId))
+    Workouts.setCurrentId(id)
 
-    const workout = getWorkoutById(id)
-
-//    $("#activity-header").text(`${selectedWorkout.name} - Activities`)
-    $("#activity-header").text(`${workout.name} - Activities`)
-    $("div.activity-pane").show()
+    const workout = Workouts.getCurrent()
 
     renderActivityList()
   })
 
 
   // Create a new empty workout for the user to work with
-  $("button#add-workout").on("click", function(event) {
+  $addWorkoutButton.on("click", function(event) {
     event.preventDefault();
 
     let workout = { day: getDayString() }
@@ -141,23 +201,18 @@ $(document).ready(() => {
 
     console.log(workout)
 
-    selectedWorkout = workout
-
-    console.log(allWorkouts)
-
     // Save to db via api
     saveWorkout(workout)
 
-    renderWorkoutList({selectLatest: true})
-    $("div.activity-pane").show()
+    renderWorkoutList()
   })
 
   // STUDENTS: Add an activity to the selected workout, then save via API
-  $("button#add-activity").on("click", function(event) {
+  $addActivityButton.on("click", function(event) {
     event.preventDefault()
 
     let activity = {
-      WorkoutId: selectedWorkoutId
+      WorkoutId: Workouts.getCurrentId()
     }
     activity = addFormValue(activity, 'ExerciseId')
     activity = addFormValue(activity, 'duration')
@@ -176,32 +231,31 @@ $(document).ready(() => {
   })
 
 
-  // --- API Calls ---
+// --- API Calls ---
 
   /*
-    Get all exercises and fill in thr drop-down.
+    Get all exercises and fill in the drop-down.
    */
   function getExercises() {
     $.ajax({
       method: "GET",
       url: "/api/exercise"
     }).then(exercises => {
-      allExercises = exercises
+      Exercises.set(exercises)
       renderExerciseDropDownList()
     })
   }
 
 
   /*
-    Get all workouts.
+    Get all workouts and update the list.
    */
   function getWorkouts() {
     $.ajax({
       url: "/api/workout",
       method: "GET"
     }).then(workouts => {
-      workouts.forEach(w => w.day = getDayString(w.day))
-      allWorkouts = workouts
+      Workouts.set(workouts)
       renderWorkoutList()
     })
   }
@@ -212,16 +266,13 @@ $(document).ready(() => {
       method: "POST",
       url: "/api/workout",
       data: workout
-    }).then(response => {
-      if (response && response.id) {
-        selectedWorkout.id = parseInt(response.id)
-        selectedWorkoutId = parseInt(response.id)
-        response.Activities = []
-        response.day = getDayString(response.day)
-        allWorkouts.push(response)
-        console.log(allWorkouts)
+    }).then(({status, data}) => {
+      if ("success" == status) {
+        Workouts.add(data)
+        Workouts.setCurrentId(data.id)
+        renderWorkoutList()
+        renderActivityList()
       }
-      renderWorkoutList({selectLatest: true})
     })
   }
 
@@ -232,39 +283,17 @@ $(document).ready(() => {
       method: "POST",
       url: "/api/activity",
       data: activity
-    }).then(function(resp){
-//      selectedWorkout.Activities.push(activity)
-      addActivityByWorkoutId(selectedWorkoutId, activity)
-      renderActivityList()
-      console.log(resp)
+    }).then(({status, data}) => {
+      if ("success" === status) {
+        console.log(data)
+        Workouts.addCurrentActivity(data)
+        renderActivityList()
+      }
     })
   }
 
 
-  // --- Utility functions ---
-
-  /*
-    Get a workout with the specified ID.
-   */
-  function getWorkoutById(id) {
-    return allWorkouts.filter(w => w.id === parseInt(id))[0]
-  }
-
-
-  /*
-    Get the name of an exercise with the specified ID.
-   */
-  function getExerciseNameById(id) {
-    return allExercises
-      .filter(e => e.id === id)
-      .map(e => e.name)[0]
-  }
-
-
-  function addActivityByWorkoutId(workoutId, activity) {
-    getWorkoutById(workoutId).Activities.push(activity)
-  }
-
+// --- Utility functions ---
 
   /*
     If an activity's target has a value, render HTML for that target.
@@ -294,7 +323,8 @@ $(document).ready(() => {
     return moment(date).format("MMM DD, YYYY")
   }
 
-  // --- Start the app ---
+
+// --- Start the app ---
 
   start()
 
