@@ -1,10 +1,6 @@
-html {
-  font-size: 16px;
-}
-
 body {
   margin: 0px;
-  padding-top: 80px;
+  font-size: 16px;
 }
 
 ul, li {
@@ -12,17 +8,19 @@ ul, li {
   padding: 0;
 }
 
+ul { margin-bottom: 0px; }
+
+div form {
+  margin: 10px;
+}
 
 .list-area {
   border: 1px solid #282828;
-  margin: 70px inherit 30px inherit;
   position: relative;
-  padding: 20px;
+  padding: 0px 20px auto 20px;
 }
 
-.list-area h4 {
-  position: absolute;
-  top: -34px;
+h2, h3 {
   left: 0;
   background-color: #282828;
   color: #fff;
@@ -31,15 +29,11 @@ ul, li {
   line-height: 1rem;
   margin: 0;
   height: 34px;
+  min-width: 50%;
 }
 
-div#workouts-list,
-div#activities-list {
-  min-height: 100px;
-}
-
-button#add-workout {
-  margin-left: 12px;
+li.placeholder {
+  color: grey
 }
 
 div.activity-pane {
@@ -53,9 +47,9 @@ div.activity-pane {
   margin-bottom: 20px;
 }
 
-#workouts-list ul li {
-  font-weight: bold;
-  margin: -20px -20px 20px -20px;
+#workouts-list ul li,
+#activities-list ul li {
+  margin: 0px;
   padding: 12px;
 }
 
@@ -63,17 +57,18 @@ div.activity-pane {
   background-color: #cdcdcd;
 }
 
-
-#activities-list ul li span {
-  font-weight: bold;
-}
-
 #activities-list ul li span,
 #workouts-list ul li span {
   font-size: .8rem;
   line-height: .85rem;
   display: block;
-  font-weight: normal;
+  font-weight: bold;
 }
 
-.error-alert { display: none;}
+.error-alert {
+  display: none;
+}
+
+div.form-group {
+  margin-bottom: 1em;
+}

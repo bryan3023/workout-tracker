@@ -10,83 +10,84 @@
   </head>
 
   <body>
-    <div class="container">
-
-      <div class="row">
-        <div class="col-6 offset-3">
-          <div class="alert alert-warning error-alert" role="alert"></div>
-        </div>
-      </div>
-
+    <div class="container mt-5">
       <div class="row">
 
-        <!-- List the workout stuff on the left side -->
-        <div class="col-sm-4">
+        <!--
+          Workout pane, from where users can add a workout to click one to
+          view its activities.
+        -->
+        <div class="col-sm-4 mb-3">
+          <h2>Workouts</h2>
           <div class="list-area">
-            <h4>Workouts</h4>
             <div id="workouts-list"><ul></ul></div>
-          </div>
-
-          <div id="add-workout-area">
-            <h5>Add a workout for today</h5>
-            <div class="form-group form-inline">
+            <div id="add-workout-area">
+              <h3>Add a workout for today</h3>
               <form id="add-workout">
                 <input name="day" type="hidden" />
-                 <label for="name">Add a workout for today</label>
-                <input name="name" type="text" class="form-control" autocomplete="off" />
-                <button name="submit" class="btn btn-primary btn-small" type="submit">Add</button>
+                <div class="input-group">
+                  <label for="name" class="sr-only">Add a workout for today</label>
+                  <input name="name" type="text" class="form-control" autocomplete="off" />
+                  <div class="input-group-append">
+                    <button name="submit" class="btn btn-primary btn-small" type="submit">Add</button>
+                  </div>
+                </div>
               </form>
             </div>
           </div>
         </div>
 
 
-        <!-- On the right side, show the activities for the selected day,
-        and allow for a new activity to be entered -->
-        <div class="col-sm-8 activity-pane">
+        <!--
+          Activities pane, which shows all activies for the current workout,
+          along with a form to add another.
+        -->
+        <div class="col-sm-8 activity-pane mb-3">
+          <h2 id="activity-header"></h2>
           <div class="list-area">
-            <h4 id="activity-header"></h4>
             <div id="activities-list"><ul></ul></div>
 
             <div id="add-activity-area">
-              <form id="add-activity">
+              <h3>Add an activity</h3>
+              <div class="alert alert-warning error-alert" role="alert"></div>
+              <form id="add-activity" class="form-horizontal">
                 <input name="workoutId" type="hidden" />
-                <div class="form-group row">
-                  <label class="col-sm-2 col-form-label">Add an activity</label>
-                  <select name="exerciseId" class="col-sm-10 form-control">
+                <div class="form-group">
+                  <label for="exerciseId" class="sr-only">Choose an exercise</label>
+                  <select name="exerciseId" class="form-control">
                     <option value="">Choose an exercise</option>
                   </select>
                 </div>
 
-                <div class-="form-group row">
-                  <label class="col-sm-2 col-form-label" for="duration">Duration</label>
-                  <div class="col-sm-10">
-                    <input class="form-control" type="text" name="duration" />
+                <div class-="form-group form-row">
+                  <label for="duration" class="col-xs-4 col-form-label">Duration</label>
+                  <div class="col-xs-8">
+                    <input name="duration" class="form-control" type="text" />
                   </div>
                 </div>
 
                 <div class-="form-group">
-                  <label>Weight</label>
-                  <input class="form-control" type="text" name="weight" />
+                  <label for="weight">Weight</label>
+                  <input name="weight" class="form-control" type="text" />
                 </div>
 
                 <div class-="form-group">
                   <label for="reps">Reps</label>
-                  <input class="form-control" type="text" name="reps" />
+                  <input name="reps" class="form-control" type="text" />
                 </div>
 
                 <div class-="form-group">
                   <label for="sets">Sets</label>
-                  <input class="form-control" type="text" name="sets" />
+                  <input name="sets" class="form-control" type="text" />
                 </div>
 
                 <div class-="form-group">
-                  <label>Distance</label>
-                  <input class="form-control" type="text" name="distance" />
+                  <label for="distance">Distance</label>
+                  <input name="distance" class="form-control" type="text" />
                 </div>
 
                 <div class-="form-group">
-                  <button name="submit" class="btn btn-primary btn-small">Add</button>
+                  <button name="submit" class="btn btn-primary" type="submit">Add</button>
                 </div>
               </form>
             </div> <!-- /#add-activity-area-->
@@ -94,7 +95,6 @@
         </div> <!-- /col-sm-8 -->
 
       </div> <!-- /row-->
-
     </div> <!-- /container-->
     
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>

@@ -1,5 +1,5 @@
 /*
-  
+
  */
 
 $(document).ready(() => {
@@ -73,11 +73,17 @@ $(document).ready(() => {
 
     addCurrentActivity(activity) {
       this.getCurrentActivities().push(activity)
+    },
+
+    count() {
+      return this.workouts.length
+    },
+
+    countCurrentActivities() {
+      return this.getCurrentActivities().length
     }
   }
 
-
-  
 
   const
     $exerciseDropDown = $("select[name='exerciseId']"),
@@ -94,6 +100,12 @@ $(document).ready(() => {
    */
   function renderWorkoutList() {
     $workoutList.empty()
+
+    if (Workouts.count() === 0) {
+      console.log("helo")
+      $workoutList.append(getRenderedPlaceholderItem("No workouts"))
+      return
+    }
 
     Workouts.getAll().forEach(workout => {
       const $workoutItem = getRenderedWorkoutItem(workout)
@@ -121,6 +133,12 @@ $(document).ready(() => {
   function renderActivityList() {
     $activityList.empty()
 
+    if (Workouts.countCurrentActivities() === 0) {
+      $activityList.append(getRenderedPlaceholderItem("No activites"))
+      showActivitiesPane()
+      return
+    }
+
     Workouts.getCurrentActivities().forEach(activity => {
       const
         exerciseName = Exercises.getName(activity.exerciseId),
@@ -140,11 +158,14 @@ $(document).ready(() => {
 
       $activityList.append($activityItem)
     })
-    renderActivitiesHeader()
-    $("div.activity-pane").show()
+    showActivitiesPane()
   }
 
 
+  function showActivitiesPane() {
+    renderActivitiesHeader()
+    $("div.activity-pane").show()
+  }
 
   /*
     If an activity's target has a value, render HTML for that target.
@@ -164,6 +185,10 @@ $(document).ready(() => {
   function renderActivitiesHeader() {
     const workoutName = Workouts.getCurrent().name
     $("#activity-header").text(`${workoutName} - Activities`)
+  }
+
+  function getRenderedPlaceholderItem(text) {
+    return $("<li>").addClass("placeholder").text(text)
   }
 
 
