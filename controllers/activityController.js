@@ -6,14 +6,13 @@ const ActivityController = {
 
   getAll(req, res){
     Activity.findAll({
-      attributes: [
-        'id', 'duration', 'distance', 'reps', 'sets', 'weight', 'exerciseId'
-      ]
+      attributes: {exclude: ['createdAt', 'updatedAt']}
     }).then(response => {
       const result = {
         status: "success",
         data: response.map(r => r.dataValues)
       }
+      console.log(result)
       res.json(result)
     }).catch(error => {
       const result = {

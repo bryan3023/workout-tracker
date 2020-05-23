@@ -240,6 +240,7 @@ $(document).ready(() => {
     .then(({status, data}) => {
       if ("success" === status) {
         Exercises.set(data)
+        console.log(Exercises.getAll())
         renderExerciseDropDownList()
       } else {
         console.error(`getExercise() failed: ${data}`)
@@ -276,6 +277,7 @@ $(document).ready(() => {
       if ("success" == status) {
         Workouts.add(data)
         Workouts.setCurrentId(data.id)
+        console.log(data)
         renderWorkoutList()
         renderActivityList()
       } else {

@@ -7,8 +7,12 @@ const WorkoutController = {
 
   getAll(req, res) {
     Workout.findAll({
-      attributes: ['id', 'name', 'day'],
-      include: [{model: Activity, as: 'activities'}]
+      attributes: {exclude: ['createdAt', 'updatedAt']},
+      include: [{
+        model: Activity,
+        as: 'activities',
+        attributes: {exclude: ['createdAt', 'updatedAt']}
+      }]
     }).then(response => {
       const result = {
         status: "success",

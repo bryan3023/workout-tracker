@@ -4,7 +4,7 @@ const ExerciseController = {
 
   getAll(req, res){
     Exercise.findAll({
-      attributes: ['id', 'name', 'type']
+      attributes: {exclude: ['createdAt', 'updatedAt']}
     }).then(response => {
       const result = {
         status: "success",
@@ -19,6 +19,7 @@ const ExerciseController = {
       res.json(result)
     })
   }
+
 }
 
 module.exports = ExerciseController 
