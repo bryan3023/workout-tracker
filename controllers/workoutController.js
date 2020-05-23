@@ -30,7 +30,6 @@ const WorkoutController = {
 
 
   create(req, res) {
-    console.log(req.body)
     Workout.create(req.body)
       .then(({dataValues}) => {
         const result = {

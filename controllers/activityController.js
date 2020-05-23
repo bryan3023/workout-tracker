@@ -12,7 +12,6 @@ const ActivityController = {
         status: "success",
         data: response.map(r => r.dataValues)
       }
-      console.log(result)
       res.json(result)
     }).catch(error => {
       const result = {
