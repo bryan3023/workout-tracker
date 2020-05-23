@@ -14,7 +14,7 @@ $(document).ready(() => {
       return this.exercises
     },
 
-    set(exercises) {
+    setAll(exercises) {
       this.exercises = exercises
     },
 
@@ -38,7 +38,7 @@ $(document).ready(() => {
       return this.workouts.filter(w => w.id === id)[0]
     },
 
-    set(workouts) {
+    setAll(workouts) {
       workouts.forEach(w => w.day = getDayString(w.day))
       this.workouts = workouts
     },
@@ -79,8 +79,8 @@ $(document).ready(() => {
     $exerciseDropDown = $("select[name='exerciseId']"),
     $workoutList = $("#workouts-list ul"),
     $activityList = $("#activities-list ul"),
-    $addWorkoutButton = $("button#add-workout"),
-    $addActivityButton = $("button#add-activity")
+    $addWorkoutForm = $("form#add-workout"),
+    $addActivityForm = $("form#add-activity")
 
 
 // --- DOM Population ---
@@ -118,24 +118,23 @@ $(document).ready(() => {
     $activityList.empty()
 
     Workouts.getCurrentActivities().forEach(activity => {
-      console.log(activity)
-
       const
         exerciseName = Exercises.getName(activity.exerciseId),
-        activityHtml = `<span>${exerciseName}</span>`,
-        exerciseTargets = [
-          getActivityTargetString(activity, 'duration'),
-          getActivityTargetString(activity, 'weight'),
-          getActivityTargetString(activity, 'reps'),
-          getActivityTargetString(activity, 'sets'),
-          getActivityTargetString(activity, 'distance')
-        ].filter(t => t)
+        activityDescription = `<span>${exerciseName}</span>`,
+        idValues = ['id', 'workoutId', 'exerciseId']
+        exerciseTargets = []
 
+      removeEmptyProperties(activity)
+      for (const property in activity) {
+        if (!idValues.includes(property)) {
+          exerciseTargets.push(getActivityTargetString(activity, property))
+        }
+      }
 
-      const $activityItem = $("<li>")
-        .addClass("activity-item")
-        .attr("data-activity-id", activity.id)
-        .html(activityHtml + exerciseTargets.join(", "))
+      const
+
+        $activityItem = getRenderedActivityItem(activity)
+          .html(activityDescription + exerciseTargets.join(", "))
 
       $activityList.append($activityItem)
     })
@@ -143,10 +142,28 @@ $(document).ready(() => {
     $("div.activity-pane").show()
   }
 
+
+
+  /*
+    If an activity's target has a value, render HTML for that target.
+   */
+  function getActivityTargetString(object, field) {
+    return field in object && object[field] ?
+      `<strong>${field}:</strong> ${object[field]}` :
+      null
+  }
+
+  function getRenderedActivityItem(item) {
+    return $("<li>")
+      .addClass("activity-item")
+      .attr("data-activity-id", item.id)
+  }
+
   function renderActivitiesHeader() {
     const workoutName = Workouts.getCurrent().name
     $("#activity-header").text(`${workoutName} - Activities`)
   }
+
 
   /*
     Fill the drop-down list with exercises to choose from.
@@ -190,40 +207,49 @@ $(document).ready(() => {
   })
 
 
-  // Create a new empty workout for the user to work with
-  $addWorkoutButton.on("click", function(event) {
+  /*
+    Create a new workout when the user submits a name.
+   */
+  $addWorkoutForm.on("submit", function(event) {
     event.preventDefault();
 
-    let workout = { day: getDayString() }
-    workout = addFormValue(workout, "name")
+    const form = $(this)
+    form.find("[name='day']").val(new Date())
+    trimFormInputs(form)
 
-    saveWorkout(workout)
-    renderWorkoutList()
+    saveWorkout(form.serialize())
+    form[0].reset()
   })
 
-  // STUDENTS: Add an activity to the selected workout, then save via API
-  $addActivityButton.on("click", function(event) {
+
+  /*
+    Add an activity to the current workout.
+
+    Note that when processing this form, we temporarily disable
+    empty inputs to prevent them from being serialized.
+   */
+  $addActivityForm.on("submit", function(event) {
     event.preventDefault()
 
-    let activity = {
-      workoutId: Workouts.getCurrentId()
-    }
-    activity = addFormValue(activity, 'exerciseId')
-    activity = addFormValue(activity, 'duration')
-    activity = addFormValue(activity, 'weight')
-    activity = addFormValue(activity, 'reps')
-    activity = addFormValue(activity, 'sets')
-    activity = addFormValue(activity, 'distance')
+    const form = $(this)
+    form.find("[name='workoutId").val(Workouts.getCurrentId())
+    trimFormInputs(form)
+    getEmptyInputs(form).prop('disabled','disabled')
 
-    console.log(activity)
+    const
+      exerciseId = form.find("[name='exerciseId']").val(),
+      countFilledValues = getNonemptyInputs(form).length
 
-    if (!activity.exerciseId) {
+    if (!exerciseId) {
       showAlert("Please choose an exercise.")
-    } else if (Object.keys(activity).length <= 2) {
+    } else if (countFilledValues <= 1) {
       showAlert("Choose at least one target for this exercise.")      
     } else {
-      saveActivity(activity)
+      saveActivity(form.serialize())
+      form[0].reset()
     }
+
+    getEmptyInputs(form).removeAttr('disabled')
   })
 
 
@@ -239,7 +265,7 @@ $(document).ready(() => {
     })
     .then(({status, data}) => {
       if ("success" === status) {
-        Exercises.set(data)
+        Exercises.setAll(data)
         console.log(Exercises.getAll())
         renderExerciseDropDownList()
       } else {
@@ -258,7 +284,7 @@ $(document).ready(() => {
       method: "GET"
     }).then(({status, data}) => {
       if ("success" === status) {
-        Workouts.set(data)
+        Workouts.setAll(data)
         console.log(Workouts.getAll())
         renderWorkoutList()
       } else {
@@ -267,7 +293,10 @@ $(document).ready(() => {
     })
   }
 
-  // Save the currently selected workout
+
+  /*
+    Save a workout, set it as the current item, then updated the page.
+   */
   function saveWorkout(workout) {
     $.ajax({
       url: "/api/workout",
@@ -308,23 +337,35 @@ $(document).ready(() => {
 
 // --- Utility functions ---
 
-  /*
-    If an activity's target has a value, render HTML for that target.
-   */
-  function getActivityTargetString(object, field) {
-    return field in object && object[field] ?
-      `<strong>${field}:</strong> ${object[field]}` :
-      null
+
+  function removeEmptyProperties(object) {
+    for (let property in object) {
+      if (null === object[property]) delete object[property]
+      if (undefined === object[property]) delete object[property]
+    }
+    return object
+  }
+
+  function getEmptyInputs(form) {
+    return form.find("input").filter(function() {
+      return "" === this.value
+    })
+  }
+
+  function getNonemptyInputs(form) {
+    return form.find("input").filter(function() {
+      return "" !== this.value
+    })
   }
 
 
+
+
   /*
-    Add a form field's value to an object if it's set.
+    Trim text across all input fields on a form.
    */
-  function addFormValue(result, field) {
-    const value = $(`[name="${field}"`).val().trim()
-    if (value) result[field] = value
-    return result
+  function trimFormInputs(form) {
+    form.children("input").val((index, value) => value.trim())
   }
 
 
