@@ -1,6 +1,9 @@
-const
-  {Activity} = require("../models"),
-  {removeSequelizeColumns} = require('../lib')
+const {Activity} = require("../models")
+
+const {
+  removeSequelizeColumns,
+  removeEmptyProperties
+} = require('../lib')
 
 const ActivityController = {
 
@@ -12,6 +15,7 @@ const ActivityController = {
         status: "success",
         data: response.map(r => r.dataValues)
       }
+      result.data.foreach(d => removeEmptyProperties(d))
       res.json(result)
     }).catch(error => {
       const result = {
@@ -30,6 +34,7 @@ const ActivityController = {
         data: dataValues
       }
       removeSequelizeColumns(result.data)
+      removeEmptyProperties(result.data)
       res.json(result)
     })
     .catch(error => {

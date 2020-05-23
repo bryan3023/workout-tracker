@@ -1,9 +1,11 @@
-const
-  {Workout, Activity} = require("../models"),
-  {removeSequelizeColumns} = require('../lib')
+const {Workout, Activity} = require("../models")
+
+const {
+  removeSequelizeColumns,
+} = require('../lib')
+
 
 const WorkoutController = {
-
 
   getAll(req, res) {
     Workout.findAll({
@@ -18,6 +20,7 @@ const WorkoutController = {
         status: "success",
         data: response.map(r => r.dataValues)
       }
+      console.log(result.data)
       res.json(result)
     }).catch(error => {
       const result = {

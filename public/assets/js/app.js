@@ -1,3 +1,7 @@
+/*
+  
+ */
+
 $(document).ready(() => {
 
   function start() {
@@ -121,7 +125,7 @@ $(document).ready(() => {
       const
         exerciseName = Exercises.getName(activity.exerciseId),
         activityDescription = `<span>${exerciseName}</span>`,
-        idValues = ['id', 'workoutId', 'exerciseId']
+        idValues = ['id', 'workoutId', 'exerciseId'],
         exerciseTargets = []
 
       removeEmptyProperties(activity)
@@ -131,10 +135,8 @@ $(document).ready(() => {
         }
       }
 
-      const
-
-        $activityItem = getRenderedActivityItem(activity)
-          .html(activityDescription + exerciseTargets.join(", "))
+      const $activityItem = getRenderedActivityItem(activity)
+        .html(activityDescription + exerciseTargets.join(", "))
 
       $activityList.append($activityItem)
     })
@@ -232,7 +234,7 @@ $(document).ready(() => {
     event.preventDefault()
 
     const form = $(this)
-    form.find("[name='workoutId").val(Workouts.getCurrentId())
+    form.find("[name='workoutId']").val(Workouts.getCurrentId())
     trimFormInputs(form)
     getEmptyInputs(form).prop('disabled','disabled')
 
@@ -256,7 +258,7 @@ $(document).ready(() => {
 // --- API Calls ---
 
   /*
-    Get all exercises and fill in the drop-down.
+    Get all exercises, then fill in the drop-down.
    */
   function getExercises() {
     $.ajax({
@@ -276,7 +278,7 @@ $(document).ready(() => {
 
 
   /*
-    Get all workouts and update the list.
+    Get all workouts, then update the list.
    */
   function getWorkouts() {
     $.ajax({
@@ -295,7 +297,7 @@ $(document).ready(() => {
 
 
   /*
-    Save a workout, set it as the current item, then updated the page.
+    Save a workout, set it as the current item, then update the page.
    */
   function saveWorkout(workout) {
     $.ajax({
@@ -315,12 +317,14 @@ $(document).ready(() => {
     })
   }
 
-  // Add an activity to the current workout being viewed.
-  // Save the currently selected workout
+
+  /*
+    Add an activity to the current workout, then update the page.
+   */
   function saveActivity(activity) {
     $.ajax({
-      method: "POST",
       url: "/api/activity",
+      method: "POST",
       data: activity
     }).then(({status, data}) => {
       if ("success" === status) {
@@ -337,7 +341,8 @@ $(document).ready(() => {
 
 // --- Utility functions ---
 
-
+  /*
+   */
   function removeEmptyProperties(object) {
     for (let property in object) {
       if (null === object[property]) delete object[property]
@@ -346,19 +351,23 @@ $(document).ready(() => {
     return object
   }
 
+
+  /*
+   */
   function getEmptyInputs(form) {
     return form.find("input").filter(function() {
       return "" === this.value
     })
   }
 
+
+  /*
+   */
   function getNonemptyInputs(form) {
     return form.find("input").filter(function() {
       return "" !== this.value
     })
   }
-
-
 
 
   /*
