@@ -1,16 +1,21 @@
 /*
-
+  All client-side script.
  */
 
 $(document).ready(() => {
 
+  /*
+    Get the initial state.
+   */
   function start() {
     getExercises()
     getWorkouts()
   }
 
 
-
+  /*
+    Manage the state of exercises on the page.
+   */
   const Exercises = {
     exercises: [],
 
@@ -24,12 +29,14 @@ $(document).ready(() => {
 
     getName(id) {
       return this.exercises
-        .filter(e => e.id === parseInt(id))
-        .map(e => e.name)[0]
+        .filter(e => parseInt(id) === e.id)[0].name
     }
   }
 
 
+  /*
+    Manage the state of workouts (and their associated actitivties) on the page.
+   */
   const Workouts = {
     workouts: [],
     current: null,
@@ -62,8 +69,6 @@ $(document).ready(() => {
     add(workout) {
       workout.activities = []
       workout.day = getDayString(workout.day)
-      console.log(workout)
-
       this.workouts.push(workout)
     },
 
@@ -85,6 +90,9 @@ $(document).ready(() => {
   }
 
 
+  /*
+    Key page components.
+   */
   const
     $exerciseDropDown = $("select[name='exerciseId']"),
     $workoutList = $("#workouts-list ul"),
@@ -102,7 +110,6 @@ $(document).ready(() => {
     $workoutList.empty()
 
     if (Workouts.count() === 0) {
-      console.log("helo")
       $workoutList.append(getRenderedPlaceholderItem("No workouts"))
       return
     }
@@ -129,7 +136,10 @@ $(document).ready(() => {
   }
 
 
-  // STUDENTS: Populate activity data for the selected workout
+  /*
+    Create this list of activities for the current workout and
+    show the activity pane.
+   */
   function renderActivityList() {
     $activityList.empty()
 
@@ -140,53 +150,69 @@ $(document).ready(() => {
     }
 
     Workouts.getCurrentActivities().forEach(activity => {
-      const
-        exerciseName = Exercises.getName(activity.exerciseId),
-        activityDescription = `<span>${exerciseName}</span>`,
-        idValues = ['id', 'workoutId', 'exerciseId'],
-        exerciseTargets = []
-
-      removeEmptyProperties(activity)
-      for (const property in activity) {
-        if (!idValues.includes(property)) {
-          exerciseTargets.push(getActivityTargetString(activity, property))
-        }
-      }
-
       const $activityItem = getRenderedActivityItem(activity)
-        .html(activityDescription + exerciseTargets.join(", "))
-
       $activityList.append($activityItem)
     })
     showActivitiesPane()
   }
 
 
+  /*
+    Show the activities pane and change its header to show the current workout.
+   */
   function showActivitiesPane() {
     renderActivitiesHeader()
     $("div.activity-pane").show()
   }
 
+
   /*
     If an activity's target has a value, render HTML for that target.
    */
-  function getActivityTargetString(object, field) {
-    return field in object && object[field] ?
-      `<strong>${field}:</strong> ${object[field]}` :
+  function getActivityTargetString(object, property) {
+    return property in object && object[property] ?
+      `<strong>${property}:</strong> ${object[property]}` :
       null
   }
 
-  function getRenderedActivityItem(item) {
-    return $("<li>")
+
+  /*
+    Get a list item with all of the set values for an activity.
+   */
+  function getRenderedActivityItem(activity) {
+    const
+      exerciseName = Exercises.getName(activity.exerciseId),
+      activityDescription = `<span>${exerciseName}</span>`,
+      idValues = ['id', 'workoutId', 'exerciseId'],
+      exerciseTargets = []
+
+    removeEmptyProperties(activity)
+    for (const property in activity) {
+      if (!idValues.includes(property)) {
+        exerciseTargets.push(getActivityTargetString(activity, property))
+      }
+    }
+
+    const $activityItem = $("<li>")
       .addClass("activity-item")
-      .attr("data-activity-id", item.id)
+      .html(activityDescription + exerciseTargets.join(", "))
+
+    return $activityItem
   }
 
+
+  /*
+    Update the activity pane's header with the name of the current workout.
+   */
   function renderActivitiesHeader() {
     const workoutName = Workouts.getCurrent().name
     $("#activity-header").text(`${workoutName} - Activities`)
   }
 
+
+  /*
+    Get a generic placeholder to show when a list is empty.
+   */
   function getRenderedPlaceholderItem(text) {
     return $("<li>").addClass("placeholder").text(text)
   }
@@ -244,8 +270,10 @@ $(document).ready(() => {
     form.find("[name='day']").val(new Date())
     trimFormInputs(form)
 
-    saveWorkout(form.serialize())
-    form[0].reset()
+    if (form.find("[name='name']").val()) {
+      saveWorkout(form.serialize())
+      form[0].reset()
+    }
   })
 
 
@@ -286,18 +314,13 @@ $(document).ready(() => {
     Get all exercises, then fill in the drop-down.
    */
   function getExercises() {
-    $.ajax({
+    invokeRestCall({
       url: "/api/exercise",
       method: "GET"
-    })
-    .then(({status, data}) => {
-      if ("success" === status) {
-        Exercises.setAll(data)
-        console.log(Exercises.getAll())
-        renderExerciseDropDownList()
-      } else {
-        console.error(`getExercise() failed: ${data}`)
-      }
+    },
+    (data) => {
+      Exercises.setAll(data)
+      renderExerciseDropDownList()
     })
   }
 
@@ -306,17 +329,13 @@ $(document).ready(() => {
     Get all workouts, then update the list.
    */
   function getWorkouts() {
-    $.ajax({
+    invokeRestCall({
       url: "/api/workout",
       method: "GET"
-    }).then(({status, data}) => {
-      if ("success" === status) {
-        Workouts.setAll(data)
-        console.log(Workouts.getAll())
-        renderWorkoutList()
-      } else {
-        console.error(`getWorkouts() failed: ${data}`)
-      }
+    },
+    (data) => {
+      Workouts.setAll(data)
+      renderWorkoutList()
     })
   }
 
@@ -325,20 +344,16 @@ $(document).ready(() => {
     Save a workout, set it as the current item, then update the page.
    */
   function saveWorkout(workout) {
-    $.ajax({
+    invokeRestCall({
       url: "/api/workout",
       method: "POST",
       data: workout
-    }).then(({status, data}) => {
-      if ("success" == status) {
-        Workouts.add(data)
-        Workouts.setCurrentId(data.id)
-        console.log(data)
-        renderWorkoutList()
-        renderActivityList()
-      } else {
-        console.error(`saveWorkout() failed: ${data}`)
-      }
+    },
+    (data) => {
+      Workouts.add(data)
+      Workouts.setCurrentId(data.id)
+      renderWorkoutList()
+      renderActivityList()
     })
   }
 
@@ -347,18 +362,28 @@ $(document).ready(() => {
     Add an activity to the current workout, then update the page.
    */
   function saveActivity(activity) {
-    $.ajax({
+    invokeRestCall({
       url: "/api/activity",
       method: "POST",
       data: activity
-    }).then(({status, data}) => {
+    },
+    (data) => {
+      Workouts.addCurrentActivity(data)
+      renderActivityList()
+    })
+  }
+
+
+  /*
+    Boilerplate wrapper for API calls.
+   */
+  function invokeRestCall(ajaxObject, successCb) {
+    $.ajax(ajaxObject).then(({status, data}) => {
       if ("success" === status) {
-        console.log(data)
-        Workouts.addCurrentActivity(data)
-        console.log(Workouts.getAll())
-        renderActivityList()
+        successCb(data)
       } else {
-        console.error(`saveActivity() failed: ${data}`)
+        const apiName = `${ajaxObject.method} ${ajaxObject.url}`
+        console.error(`${apiName} failed: ${data}`)
       }
     })
   }
@@ -367,6 +392,7 @@ $(document).ready(() => {
 // --- Utility functions ---
 
   /*
+    Remove properties with no set value to keep object clean.
    */
   function removeEmptyProperties(object) {
     for (let property in object) {
@@ -378,6 +404,7 @@ $(document).ready(() => {
 
 
   /*
+    Get all form inputs that have no set value.
    */
   function getEmptyInputs(form) {
     return form.find("input").filter(function() {
@@ -387,6 +414,7 @@ $(document).ready(() => {
 
 
   /*
+    Get all form inputs that have some set value.
    */
   function getNonemptyInputs(form) {
     return form.find("input").filter(function() {

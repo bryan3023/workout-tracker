@@ -29,7 +29,6 @@ h2, h3 {
   line-height: 1rem;
   margin: 0;
   height: 34px;
-  min-width: 50%;
 }
 
 li.placeholder {
@@ -71,4 +70,10 @@ div.activity-pane {
 
 div.form-group {
   margin-bottom: 1em;
+}
+
+@media (min-width: 768px) { 
+  h2 {
+    max-width: 50%;
+  }
 }
